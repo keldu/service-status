@@ -17,13 +17,38 @@ nav{
 	color: #DDDDDD;
 }
 
+ul {
+	list-style: none;
+	padding-left: 20px;
+}
+
+a:link, a:visited {
+	color: #DDDDDD;
+	text-align: center;
+  	text-decoration: none;
+  	display: inline-block;
+}
+
+a:hover, a:active {
+}
+
+button {
+	width: 100%;
+	background-color: #333333; /* Green */
+  	border: none;
+	color: #DDDDDD;
+  	text-align: left;
+  	text-decoration: none;
+  	display: inline-block;
+}
+
 .page-icon {
 	height: 1em;
 	text-align: center;
 	padding: 8px;
 }
 
-div.content {
+div.content-container {
 	flex: 1;
 	display: flex;
 	flex-direction: column;
@@ -36,6 +61,7 @@ header {
 
 section {
 	flex: 1;
+	margin: 15px;
 }
 
 footer {

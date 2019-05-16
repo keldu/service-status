@@ -4,28 +4,38 @@
 		<title>Service Status Information</title>
 		<meta charset="utf-8" />
 		<link rel="stylesheet" type="text/css" href="static/status.css" />
-		<script type="text/javascript" src="static/status.js"></script>
+		<script type="text/javascript" src="static/module.js"></script>
 		<script type="text/javascript" src="static/ajax.js"></script>
 		<meta name="robots" content="noindex,nofollow" />
 	</head>
 	<body onload="modules.init()">
-		<nav>
+		<nav id="navbar-left">
 			<div class="page-icon">
 				Service Status
 			</div>
+			<ul id="navbar-list">
+				
+			</ul>
 			<!--
 	   			<ul class="nav-list">
 					<li><a href="index.html?module=ping">Ping</a></li>
 				</ul>
 	   		-->
 		</nav>
-		<div class="content">
+		<div class="content-container">
 			<header>
 				<!--
 	    				Number of monitored hosts: #count
 	    			-->
 			</header>
-			<section>
+			<section class="content">
+				<table id="content-table">
+				  <tr>
+				    <th>Name</th>
+				    <th>Address</th>
+				    <th>Status</th>
+				  </tr>
+				</table>
 			</section>
 			<footer>
 			</footer>
