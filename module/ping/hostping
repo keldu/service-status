@@ -39,7 +39,7 @@ printf '%s' "$STATUS" > $HOST
 if [ -f $LATEST_LOG ] ;then
 	LAT_DATA=$(cat $LATEST_LOG)
 	LAT_STAT=$(get_json "$LAT_DATA" 'status')
-	LAT_TIME=$(get_json "$LAT_DATA" 'time')
+	LAT_TIME=$(get_json "$LAT_DATA" 'changed')
 	if [ $STATUS == $LAT_STAT ] && [ $LAT_TIME != "" ] ;then
 		LAST_CHANGE=$LAT_TIME
 	else
@@ -49,7 +49,7 @@ else
 	LAST_CHANGE=$EPOCH
 fi
 
-printf '{"name":"%s","address":"%s","info":"%s","status":"%s","time":"%s","changed":"%s"}' "$NAME" "$VALUE" "$INFO" "$STATUS" "$EPOCH" "$LAST_CHANGE" > $LATEST_LOG
+printf '{"name":"%s","address":"%s","info":"%s","status":"%s","time":%s,"changed":%s}' "$NAME" "$VALUE" "$INFO" "$STATUS" "$EPOCH" "$LAST_CHANGE" > $LATEST_LOG
 
 
 # order all epoch time stamped files, rotate old one and create detailed json list
@@ -60,7 +60,7 @@ DETAIL="detail.json"
 unset $FIRST
 
 files=(${HOSTDIR}/*.time)
-printf '[' > "${HOSTDIR}/${DETAIL}"
+printf '[' > "${HOSTDIR}/${DETAIL}.tmp"
 for (( i = ${#files[@]} - 1 ; i >= 0 ; i-- )) ;do
 	if (( ${#files[@]} > $DETAIL_COUNT + $i )) ;then
 		rm "${files[$i]}"
@@ -68,13 +68,14 @@ for (( i = ${#files[@]} - 1 ; i >= 0 ; i-- )) ;do
 		if [ -z $FIRST ] ;then
 			FIRST="set"
 		else
-			printf ',' >> "${HOSTDIR}/${DETAIL}"
+			printf ',' >> "${HOSTDIR}/${DETAIL}.tmp"
 		fi
 		DET_TIME=$(echo ${files[$i]} | cut -d'.' -f 1 | cut -d'/' -f 3)
 		DET_STAT=$(cat ${files[$i]})
 
-		printf '{"time":"%s","status":"%s"}' "$DET_TIME" "$DET_STAT" >> "${HOSTDIR}/${DETAIL}"
+		printf '{"time":"%s","status":"%s"}' "$DET_TIME" "$DET_STAT" >> "${HOSTDIR}/${DETAIL}.tmp"
 	fi
 done
-printf ']' >> "${HOSTDIR}/${DETAIL}"
+printf ']' >> "${HOSTDIR}/${DETAIL}.tmp"
+mv "${HOSTDIR}/${DETAIL}.tmp" "${HOSTDIR}/${DETAIL}"
 unset $FIRST

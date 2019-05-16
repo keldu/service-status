@@ -2,6 +2,7 @@
 
 HOSTS="ping.list"
 INFO_FILE="ping.json"
+INFO_FILE_TMP="${INFO_FILE}.tmp"
 
 HOSTDIR="hosts"
 
@@ -14,7 +15,7 @@ if [ ! -f $HOSTS ] ;then
 	exit 1
 fi
 
-rm -f $INFO_FILE
+#rm -f $INFO_FILE
 
 CTR=0
 
@@ -29,19 +30,20 @@ done < $HOSTS
 
 wait
 
-printf '[' > $INFO_FILE
+printf '[' > $INFO_FILE_TMP
 unset $FIRST
 
 for FILE in $HOSTDIR/*.json; do
 	if [ -z $FIRST ] ;then
 		FIRST="set"
 	else
-		printf ',' >> $INFO_FILE
+		printf ',' >> $INFO_FILE_TMP
 	fi
-	cat $FILE >> $INFO_FILE
+	cat $FILE >> $INFO_FILE_TMP
 done
 
-printf ']' >> $INFO_FILE
+printf ']' >> $INFO_FILE_TMP
+mv $INFO_FILE_TMP $INFO_FILE
 unset $FIRST
 
 
