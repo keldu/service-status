@@ -1,8 +1,8 @@
 #!/bin/bash
 PWD=$(pwd)
-cd "$PWD/checks"
-for check in *.check; do
-	./$check &
+cd "$PWD/module/"
+for mod in *; do
+	./$mod/$mod.check &
 done
 
 wait

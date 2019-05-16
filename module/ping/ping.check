@@ -1,0 +1,50 @@
+#!/bin/bash
+
+HOSTS="ping.list"
+INFO_FILE="ping.json"
+
+HOSTDIR="hosts"
+
+HOST_HANDLER="hostping"
+
+PWD=$(pwd)
+cd "$PWD/ping"
+
+if [ ! -f $HOSTS ] ;then
+	exit 1
+fi
+
+rm -f $INFO_FILE
+
+CTR=0
+
+while read -r NAME VALUE INFO GUARANTEE; do
+	if [ ! -z $NAME ] && [ ! -z $VALUE ] && [ -z $GUARANTEE ] && [[ ${NAME:0:1} != "#" ]] ;then
+		
+		bash ./hostping $CTR $NAME $VALUE $INFO &
+		CTR=$((CTR+1))
+		
+	fi
+done < $HOSTS
+
+wait
+
+printf '[' > $INFO_FILE
+unset $FIRST
+
+for FILE in $HOSTDIR/*.json; do
+	if [ -z $FIRST ] ;then
+		FIRST="set"
+	else
+		printf ',' >> $INFO_FILE
+	fi
+	cat $FILE >> $INFO_FILE
+done
+
+printf ']' >> $INFO_FILE
+unset $FIRST
+
+
+
+
+

@@ -1,0 +1,78 @@
+#!/bin/bash
+
+
+CTR=$1
+NAME=$2
+VALUE=$3
+INFO=$4
+
+function get_json {
+	ANS=$(echo "$1" | python3 -c "import sys, json; print(json.load(sys.stdin)['$2'])")
+	echo $ANS
+}
+
+if [ -z $CTR ] || [ -z $NAME ] || [ -z $VALUE ] ;then
+	exit 1
+fi
+
+HOSTDIR="hosts/${NAME}"
+LATEST_LOG="${HOSTDIR}.json"
+
+if [ ! -f $HOSTDIR ] ;then
+	mkdir -p $HOSTDIR
+fi
+
+EPOCH=$(date +%s)
+HOST="${HOSTDIR}/${EPOCH}.time"
+
+sleep $CTR
+
+ping -c 1 $VALUE > /dev/null
+if [ $? == 0 ] ;then
+	STATUS="okay"
+else
+	STATUS="failed"
+fi
+
+printf '%s' "$STATUS" > $HOST
+
+if [ -f $LATEST_LOG ] ;then
+	LAT_DATA=$(cat $LATEST_LOG)
+	LAT_STAT=$(get_json "$LAT_DATA" 'status')
+	LAT_TIME=$(get_json "$LAT_DATA" 'time')
+	if [ $STATUS == $LAT_STAT ] ;then
+		LAST_CHANGE=$LAT_TIME
+	else
+		LAST_CHANGE=$EPOCH
+	fi
+fi
+
+printf '{"name":"%s","address":"%s","info":"%s","status":"%s","time":"%s","changed":"%s"}' "$NAME" "$VALUE" "$INFO" "$STATUS" "$EPOCH" "$LAST_CHANGE" > $LATEST_LOG
+
+
+# order all epoch time stamped files, rotate old one and create detailed json list
+
+DETAIL_COUNT=20
+
+DETAIL="detail.json"
+unset $FIRST
+
+files=(${HOSTDIR}/*.time)
+printf '[' > "${HOSTDIR}/${DETAIL}"
+for (( i = ${#files[@]} - 1 ; i >= 0 ; i-- )) ;do
+	if (( ${#files[@]} > $DETAIL_COUNT + $i )) ;then
+		rm "${files[$i]}"
+	else
+		if [ -z $FIRST ] ;then
+			FIRST="set"
+		else
+			printf ',' >> "${HOSTDIR}/${DETAIL}"
+		fi
+		DET_TIME=$(echo ${files[$i]} | cut -d'.' -f 1 | cut -d'/' -f 3)
+		DET_STAT=$(cat ${files[$i]})
+
+		printf '{"time":"%s","status":"%s"}' "$DET_TIME" "$DET_STAT" >> "${HOSTDIR}/${DETAIL}"
+	fi
+done
+printf ']' >> "${HOSTDIR}/${DETAIL}"
+unset $FIRST
