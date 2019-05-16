@@ -34,7 +34,6 @@ else
 	STATUS="failed"
 fi
 
-printf '%s' "$STATUS" > $HOST
 
 if [ -f $LATEST_LOG ] ;then
 	LAT_DATA=$(cat $LATEST_LOG)
@@ -44,10 +43,12 @@ if [ -f $LATEST_LOG ] ;then
 		LAST_CHANGE=$LAT_TIME
 	else
 		LAST_CHANGE=$EPOCH
+		printf '%s' "$STATUS" > $HOST
 	fi
 else
 	LAST_CHANGE=$EPOCH
 fi
+
 
 printf '{"name":"%s","address":"%s","info":"%s","status":"%s","time":%s,"changed":%s}' "$NAME" "$VALUE" "$INFO" "$STATUS" "$EPOCH" "$LAST_CHANGE" > $LATEST_LOG
 
