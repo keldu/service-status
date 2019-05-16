@@ -40,7 +40,7 @@ if [ -f $LATEST_LOG ] ;then
 	LAT_DATA=$(cat $LATEST_LOG)
 	LAT_STAT=$(get_json "$LAT_DATA" 'status')
 	LAT_TIME=$(get_json "$LAT_DATA" 'time')
-	if [ $STATUS == $LAT_STAT ] && [ ! -z $LAT_STAT ] ;then
+	if [ $STATUS == $LAT_STAT ] && [ $LAT_STAT != "" ] ;then
 		LAST_CHANGE=$LAT_TIME
 	else
 		LAST_CHANGE=$EPOCH

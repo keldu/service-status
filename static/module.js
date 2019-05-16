@@ -3,7 +3,6 @@ var modules = {
 	modulename:"",
 
 	states:[],
-
 	modulestates:[],
 
 	module:function(info){
@@ -21,17 +20,30 @@ var modules = {
 	},
 
 	modulehost:function(info){
+		this.node = modules.node("tr","content-element");
+		this.node.appendChild(modules.node("td","",info.status));
+		this.node.appendChild(modules.node("td","",info.name));
+		this.node.appendChild(modules.node("td","",info.address));
+		this.node.appendChild(modules.node("td","",info.info));
+
+		document.getElementById("content-list").appendChild(this.node);
+
 		this.fetch = function(){
-		}
+			return;
+		};
 	},
 
 	tosite:function(modname){
-		if ( modname == modules.modulename && modname == "" ){
+		if ( modname == modules.modulename || modname == "" ){
 			return;
 		}
 		modules.modulename = modname;
 		modules.modulestates=[];
-		document.getElementById("content-table").innerHTML = "";
+		table = document.getElementById("content-list");
+		document.querySelectorAll('.content-element').forEach(function(ele){
+			table.removeChild(ele);
+		});
+
 		ajax.asyncGet("module/"+modules.modulename+"/"+modules.modulename+".json", function(request){
 			if(request.status != 200){
 				window.alert("Failed to fetch module/"+modules.modulename+"/"+modules.modulename+".json, HTTP " + request.status);
@@ -41,11 +53,8 @@ var modules = {
 				var data = JSON.parse(request.responseText);
 			}
 			catch(e){
-				window.alert("Failed to parse info.json: " + e);
+				window.alert("Failed to parse module json file: " + e);
 				return;
-			}
-			if(data.length > 0){
-				modules.modulename = data[0].module;
 			}
 			data.forEach(function(modname){
 				modules.modulestates.push(new modules.modulehost(modname));
@@ -75,7 +84,7 @@ var modules = {
 	init:function(){
 		ajax.asyncGet("info.json", function(request){
 			if(request.status != 200){
-				window.alert("Failed to fetch info.json, HTTP " + request.status);
+				window.alert("Failed to fetch info.json - HTTP " + request.status);
 				return;
 			}
 			try{
@@ -86,15 +95,14 @@ var modules = {
 				return;
 			}
 			if(data.length > 0){
-				modules.modulename = data[0].module;
+
 			}else{
 				return;
 			}
-			alert(modules.modulename)
 			data.forEach(function(info){
 				modules.states.push(new modules.module(info));
 			});
-			modules.tosite(modules.modulename);
+			modules.tosite(data[0].module);
 		},
 		function(e){
 			window.alert("Failed to load status information: " + e);
