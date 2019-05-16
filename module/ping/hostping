@@ -22,10 +22,10 @@ if [ ! -f $HOSTDIR ] ;then
 	mkdir -p $HOSTDIR
 fi
 
-EPOCH=$(date +%s)
-HOST="${HOSTDIR}/${EPOCH}.time"
 
 sleep $CTR
+EPOCH=$(date +%s)
+HOST="${HOSTDIR}/${EPOCH}.time"
 
 ping -c 1 $VALUE > /dev/null
 if [ $? == 0 ] ;then
