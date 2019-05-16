@@ -40,11 +40,13 @@ if [ -f $LATEST_LOG ] ;then
 	LAT_DATA=$(cat $LATEST_LOG)
 	LAT_STAT=$(get_json "$LAT_DATA" 'status')
 	LAT_TIME=$(get_json "$LAT_DATA" 'time')
-	if [ $STATUS == $LAT_STAT ] && [ $LAT_STAT != "" ] ;then
+	if [ $STATUS == $LAT_STAT ] && [ $LAT_TIME != "" ] ;then
 		LAST_CHANGE=$LAT_TIME
 	else
 		LAST_CHANGE=$EPOCH
 	fi
+else
+	LAST_CHANGE=$EPOCH
 fi
 
 printf '{"name":"%s","address":"%s","info":"%s","status":"%s","time":"%s","changed":"%s"}' "$NAME" "$VALUE" "$INFO" "$STATUS" "$EPOCH" "$LAST_CHANGE" > $LATEST_LOG

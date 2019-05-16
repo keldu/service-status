@@ -24,6 +24,8 @@ var modules = {
 		this.node.appendChild(modules.node("td","",info.status));
 		this.node.appendChild(modules.node("td","",info.name));
 		this.node.appendChild(modules.node("td","",info.address));
+		this.node.appendChild(modules.node("td","",new Date(info.time*1000)));
+		this.node.appendChild(modules.node("td","",new Date(info.changed*1000)));
 		this.node.appendChild(modules.node("td","",info.info));
 
 		document.getElementById("content-list").appendChild(this.node);
