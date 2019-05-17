@@ -1,7 +1,0 @@
-[
-{
-	"name":"Ping Monitor",
-	"info":"checks reachability",
-	"module":"ping"
-}
-]
