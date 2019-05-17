@@ -18,16 +18,16 @@ fi
 #rm -f $INFO_FILE
 
 CTR=0
-
-while read -r NAME VALUE INFO GUARANTEE; do
-	if [ ! -z $NAME ] && [ ! -z $VALUE ] && [ -z $GUARANTEE ] && [[ ${NAME:0:1} != "#" ]] ;then
+IFS='|'
+while read -r NAME VALUE INFO SENTINEL; do
+	if [ ! -z $NAME ] && [ ! -z $VALUE ] && [ -z $SENTINEL ] && [[ ${NAME:0:1} != "#" ]] ;then
 		
 		bash ./hostping $CTR $NAME $VALUE $INFO &
 		CTR=$((CTR+1))
 		
 	fi
 done < $HOSTS
-
+unset IFS
 wait
 
 printf '[' > $INFO_FILE_TMP
