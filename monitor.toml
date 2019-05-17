@@ -1,15 +1,8 @@
-
 [[Module]]
 	name="icmp"
 	longname="ICMP Monitor"
 
 [[Host]]
 	name="git-keldu"
-	address="git.keldu.de"
-	[[Host.Module]]
-		name="icmp"
 [[Host]]
 	name="www-fsmi"
-	address="www.fsmi.uni-karlsruhe.de"
-	[[Host.Module]]
-		name="icmp"
