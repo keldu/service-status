@@ -1,5 +1,4 @@
 *{
-	outline: 1px solid;
 }
 
 body{
@@ -15,6 +14,11 @@ nav{
 	height: 100vh;
 	background-color: #222222;
 	color: #DDDDDD;
+}
+
+th,td{
+	text-align: left;
+	padding-left: 50px;
 }
 
 ul {
