@@ -1,8 +1,14 @@
-[[Module]]
+[[module]]
 	name="icmp"
 	longname="ICMP Monitor"
 
-[[Host]]
+[[host]]
 	name="git-keldu"
-[[Host]]
+	address="git.keldu.de"
+	[[Host.Modules]]
+		name="icmp"
+[[host]]
 	name="www-fsmi"
+	address="www.fsmi.uni-karlsruhe.de"
+	[[host.modules]]
+		name="icmp"

@@ -46,7 +46,7 @@ button {
   	display: inline-block;
 }
 
-.page-icon {
+.home-icon {
 	height: 1em;
 	text-align: center;
 	padding: 8px;
@@ -63,7 +63,7 @@ header {
 	height: 2em;
 }
 
-section {
+section.content {
 	flex: 1;
 	margin: 15px;
 }
