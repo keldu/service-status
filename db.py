@@ -7,12 +7,34 @@ DEFAULT_PATH = os.path.join(os.path.dirname(__file__),'monitor.sqlite3')
 NAME="status service"
 VERSION="0.1"
 
+def shouldUpdate(connection, modified):
+	cursor = connection.cursor()
+	query = """
+	SELECT last_modified FROM meta
+	"""
+
+	fetched = cursor.fetchone()
+	query = """
+	UPDATE OR ABORT meta
+	SET last_modified = ?
+	"""
+	if not fetched:
+		cursor.execute(query, modified)
+		return True
+
+	if fetched[2] < modified:
+		cursor.execute(query, modified)
+		return True
+
+	return False
+
 def generate(connection):
 	cursor = connection.cursor()
 	query = """
 	CREATE TABLE "meta" (
 		"sw_name" TEXT NOT NULL,
-		"version" TEXT NOT NULL
+		"version" TEXT NOT NULL,
+		"last_modified" INTEGER NOT NULL DEFAULT 0
 	);
 	"""
 	cursor.execute(query);
@@ -47,10 +69,10 @@ def generate(connection):
 
 	query = """
 	CREATE TABLE "hostmodule" (
-		"modules_id"	INTEGER NOT NULL,
+		"module_id"	INTEGER NOT NULL,
 		"host_id"	INTEGER NOT NULL,
 		FOREIGN KEY("host_id") REFERENCES "hosts"("id") ON UPDATE CASCADE ON DELETE CASCADE,
-		FOREIGN KEY("modules_id") REFERENCES "modules"("id") ON UPDATE CASCADE ON DELETE CASCADE
+		FOREIGN KEY("module_id") REFERENCES "modules"("id") ON UPDATE CASCADE ON DELETE CASCADE
 	);
 	"""
 	cursor.execute(query)
@@ -59,7 +81,7 @@ def generate(connection):
 	query = """
 	CREATE UNIQUE INDEX "hostmodule_index" ON "hostmodule" (
 		"host_id",
-		"modules_id"
+		"module_id"
 	);
 	"""
 	cursor.execute(query)
@@ -103,7 +125,7 @@ def isHealthy(connection):
 def createHost(connection, name, address, info=""):
 	cursor = connection.cursor()
 	query = """
-		INSERT INTO hosts (name, address, info)
+		INSERT OR REPLACE INTO hosts (name, address, info)
 		VALUES (?,?,?)
 	"""
 	cursor.execute(query, (name,address,info))
@@ -115,7 +137,7 @@ def createHost(connection, name, address, info=""):
 def createModule(connection, name, long_name, description):
 	cursor = connection.cursor()
 	query = """
-		INSERT INTO modules (name, long_name, description)
+		INSERT OR REPLACE INTO modules (name, long_name, description)
 		VALUES (?,?,?)
 	"""
 	cursor.execute(query, (name,long_name,description))
@@ -125,6 +147,14 @@ def createModule(connection, name, long_name, description):
 	return cursor.lastrowid
 
 def createHostModule(connection, host_id, module_id):
+	cursor = connection.cursor()
+	query = """
+		INSERT OR REPLACE INTO hostmodule (host_id, module_id)
+		VALUES (?,?)
+	"""
+	cursor.execute(query, (host_id, module_id))
+
+	connection.commit()
 
 	return
 

@@ -17,12 +17,15 @@ def generateInfo(config):
 	return
 
 def monitor():
+	modified = config.lastModified()
 
 	connection = db.connect()
-	if(connection):
-		print("hurray")
+	if not connection:
+		return
 
-	conf = config.load()
+	if db.shouldUpdate(connection,modified):
+		conf = config.load()
+	else:
 
 	generateInfo(conf)
 
