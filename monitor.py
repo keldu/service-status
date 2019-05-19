@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
-import toml
 import json
 import os
-import sqlite3
+#Local
+import db
+import config
+
+
+OUTPUT_PATH=os.path.join(os.path.dirname(__file__),'output/')
 
 
 def generateInfo(config):
@@ -13,10 +17,14 @@ def generateInfo(config):
 	return
 
 def monitor():
-	config = toml.load("monitor.toml")
-	print(config)
 
-	generateInfo(config)
+	connection = db.connect()
+	if(connection):
+		print("hurray")
+
+	conf = config.load()
+
+	generateInfo(conf)
 
 	return
 
