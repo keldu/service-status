@@ -11,8 +11,8 @@ OUTPUT_PATH=os.path.join(os.path.dirname(__file__),'output/')
 
 def generateInfo(config):
 
-	for mod in config['module']:
-		print(mod['name'])
+	for mod in config['modules']:
+		print(mod)
 
 	return
 
@@ -25,8 +25,8 @@ def monitor():
 
 	if db.shouldUpdate(connection,modified):
 		conf = config.load()
-	else:
-
+		db.updateFromConfig(connection, conf, modified)
+	
 	generateInfo(conf)
 
 	return

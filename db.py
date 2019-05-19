@@ -7,6 +7,33 @@ DEFAULT_PATH = os.path.join(os.path.dirname(__file__),'monitor.sqlite3')
 NAME="status service"
 VERSION="0.1"
 
+def updateFromConfig(connection, conf, modified):
+	cursor = connection.cursor()
+	query = """
+	UPDATE OR ABORT meta
+	SET last_modified = ?
+	"""
+	cursor.execute(query, [modified])
+
+	query = """
+	SELECT hosts.name, group_concat(modules.name) FROM hostmodule
+	INNER JOIN hosts ON hostmodule.host_id = hosts.id
+	INNER JOIN modules ON hostmodule.module_id = modules.id
+	GROUP BY hosts.id
+	"""
+
+	cursor.execute(query)
+	result = cursor.fetchall()
+	print(conf)
+	print(result)
+
+	for host in result:
+		return
+
+	connection.commit()
+
+	return
+
 def shouldUpdate(connection, modified):
 	cursor = connection.cursor()
 	query = """
@@ -14,16 +41,10 @@ def shouldUpdate(connection, modified):
 	"""
 
 	fetched = cursor.fetchone()
-	query = """
-	UPDATE OR ABORT meta
-	SET last_modified = ?
-	"""
 	if not fetched:
-		cursor.execute(query, modified)
 		return True
 
 	if fetched[2] < modified:
-		cursor.execute(query, modified)
 		return True
 
 	return False
