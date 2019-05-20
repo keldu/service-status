@@ -7,6 +7,10 @@ DEFAULT_PATH = os.path.join(os.path.dirname(__file__),'monitor.sqlite3')
 NAME="status service"
 VERSION="0.1"
 
+def getModules(connection):
+	
+	return []
+
 def updateFromConfig(connection, conf, modified):
 	cursor = connection.cursor()
 	query = """
