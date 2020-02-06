@@ -10,6 +10,7 @@ body{
 }
 
 nav{
+	min-width: 10em;
 	width: 10em;
 	height: 100vh;
 	background-color: #222222;
@@ -38,12 +39,13 @@ a:hover, a:active {
 
 button {
 	width: 100%;
+	margin: 2px 0;
 	background-color: #333333; /* Green */
-  	border: none;
+	border: none;
 	color: #DDDDDD;
-  	text-align: left;
-  	text-decoration: none;
-  	display: inline-block;
+	text-align: left;
+	text-decoration: none;
+	display: inline-block;
 }
 
 .page-icon {
